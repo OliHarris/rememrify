@@ -61,7 +61,7 @@ const App = () => {
 
       axios
         .get(
-          `https://uk-charts-archive.wikia.com/api.php?action=parse&format=json&page=UK_Singles_%26_Album_Chart_(${weekStart})`
+          `https://uk-charts-archive.wikia.com/api.php?action=parse&format=json&page=UK_Singles_%26_Album_Chart_(${weekStart})&origin=*`
         )
         .then((response) => {
           // console.log(response);
