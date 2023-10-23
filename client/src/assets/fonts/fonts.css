@@ -1,0 +1,42 @@
+/* BerlingskeSerifTx */
+@font-face {
+	font-family: 'Berlingske';
+	src: url('../fonts/BerlingskeSerifTx/BerlingskeSerifTx-XBd/BerlingskeSerifTx-XBd.eot');
+	src: local('☺'), url('../fonts/BerlingskeSerifTx/BerlingskeSerifTx-XBd/BerlingskeSerifTx-XBd.woff') format('woff'), url('../fonts/BerlingskeSerifTx/BerlingskeSerifTx-XBd/BerlingskeSerifTx-XBd.ttf') format('truetype'), url('../fonts/BerlingskeSerifTx/BerlingskeSerifTx-XBd/BerlingskeSerifTx-XBd.svg') format('svg');
+	font-weight: 700;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Berlingske';
+	src: url('../fonts/BerlingskeSerifTx/BerlingskeSerifTx-Rg/BerlingskeSerifTx-Rg.eot');
+	src: local('☺'), url('../fonts/BerlingskeSerifTx/BerlingskeSerifTx-Rg/BerlingskeSerifTx-Rg.woff') format('woff'), url('../fonts/BerlingskeSerifTx/BerlingskeSerifTx-Rg/BerlingskeSerifTx-Rg.ttf') format('truetype'), url('../fonts/BerlingskeSerifTx/BerlingskeSerifTx-Rg/BerlingskeSerifTx-Rg.svg') format('svg');
+	font-weight: 400;
+	font-style: normal;
+}
+
+
+/* OpenSans */
+@font-face {
+	font-family: 'OpenSans';
+	src: url('../fonts/OpenSans/OpenSans-ExtraBold/OpenSans-ExtraBold.eot');
+	src: local('☺'), url('../fonts/OpenSans/OpenSans-ExtraBold/OpenSans-ExtraBold.woff') format('woff'), url('../fonts/OpenSans/OpenSans-ExtraBold/OpenSans-ExtraBold.ttf') format('truetype'), url('../fonts/OpenSans/OpenSans-ExtraBold/OpenSans-ExtraBold.svg') format('svg');
+	font-weight: 700;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'OpenSans';
+	src: url('../fonts/OpenSans/OpenSans-Regular/OpenSans-Regular.eot');
+	src: local('☺'), url('../fonts/OpenSans/OpenSans-Regular/OpenSans-Regular.woff') format('woff'), url('../fonts/OpenSans/OpenSans-Regular/OpenSans-Regular.ttf') format('truetype'), url('../fonts/OpenSans/OpenSans-Regular/OpenSans-Regular.svg') format('svg');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'OpenSans';
+	src: url('../fonts/OpenSans/OpenSans-Light/OpenSans-Light.eot');
+	src: local('☺'), url('../fonts/OpenSans/OpenSans-Light/OpenSans-Light.woff') format('woff'), url('../fonts/OpenSans/OpenSans-Light/OpenSans-Light.ttf') format('truetype'), url('../fonts/OpenSans/OpenSans-Light/OpenSans-Light.svg') format('svg');
+	font-weight: 300;
+	font-style: normal;
+}

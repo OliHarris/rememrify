@@ -1,0 +1,391 @@
+@charset "utf-8";
+/* CSS Document */
+
+@import "../../assets/fonts/fonts";
+
+/* -----------------------------------------------
+:: #background
+-------------------------------------------------- */
+#background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.floating {
+  position: relative;
+  z-index: 2;
+  -webkit-animation: floating 3s ease-in-out infinite;
+  -moz-animation: floating 3s ease-in-out infinite;
+  -o-animation: floating 3s ease-in-out infinite;
+  animation: floating 3s ease-in-out infinite;
+}
+
+#background #grass {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 50%;
+  background: #8fcc8f; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(
+    #476647,
+    #8fcc8f
+  ); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#476647, #8fcc8f); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(
+    #476647,
+    #8fcc8f
+  ); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#476647, #8fcc8f); /* Standard syntax */
+}
+
+#background ul {
+  position: absolute;
+  transform: rotate(90deg);
+  width: 100%;
+}
+
+#background ul.left,
+#background ul.right {
+  position: absolute;
+  z-index: 1;
+}
+
+#background ul.left {
+  top: 25%;
+  left: 0;
+}
+
+#background ul.right {
+  top: 50%;
+  right: 0;
+}
+
+#background ul.top {
+  top: 0;
+}
+
+#background ul.bottom {
+  top: 75%;
+  transform: rotate(270deg);
+}
+
+#background li {
+  position: relative;
+}
+
+#background .hexagon.hue-wipe {
+  position: absolute;
+  top: 0;
+}
+
+/* -----------------------------------------------
+:: General
+-------------------------------------------------- */
+.highlight {
+  color: #3042fa;
+  font-weight: bold;
+}
+
+/* -----------------------------------------------
+:: .panel
+-------------------------------------------------- */
+.panel {
+  position: relative;
+  margin: 1em 0;
+  border: 0.5em solid #fac031;
+}
+
+.panel + .panel {
+  margin-top: 2em;
+}
+
+.panel .content {
+  position: relative;
+  padding: 1em;
+  z-index: 1;
+}
+
+.panel .content h1 span {
+  display: block;
+}
+
+.panel .background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  opacity: 0.8;
+}
+
+/* -----------------------------------------------
+:: .loading-overlay
+-------------------------------------------------- */
+#weekpicker,
+#wikichart .song-row > td {
+  position: relative;
+}
+
+#wikichart .song-row > td > table {
+  min-height: 127px;
+}
+
+#weekpicker {
+  max-width: 308px;
+  margin: 0 auto 1em;
+}
+
+#weekpicker .flatpickr-input {
+  display: none;
+}
+
+.loading-overlay {
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  z-index: 1;
+}
+
+.loading-overlay > div {
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+
+.loading-overlay > div span {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.loading-overlay > div span .load-chart {
+  color: #3042fa;
+}
+
+.loading-overlay > div span figure {
+  margin: 0 auto;
+}
+
+/* -----------------------------------------------
+:: Social buttons
+-------------------------------------------------- */
+#twitter-widget-0 {
+  vertical-align: top;
+}
+
+/* -----------------------------------------------
+:: #wikichart
+-------------------------------------------------- */
+/* #wikichart > *,
+#wikichart h2 .editsection {
+display: none;
+} */
+
+#wikichart > table:first-of-type {
+  display: block;
+  max-width: 300px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+#wikichart > table {
+  /* min-height: 2604px; */
+  font-family: "OpenSans", Tahoma, sans-serif;
+  font-weight: 400;
+  font-size: 16px !important;
+  font-size: 1rem !important;
+  text-align: left;
+  line-height: 1.25;
+}
+
+#wikichart tr.wrapper th {
+  font-weight: 700;
+}
+
+#wikichart tr.wrapper td:nth-of-type(1) {
+  width: 20%;
+  padding-right: 1em;
+  color: #3042fa;
+  font-family: "Berlingske", Tahoma, sans-serif;
+  font-weight: 700;
+  text-align: center;
+}
+
+#wikichart tr.wrapper td:nth-of-type(1) {
+  font-size: 1.5rem;
+}
+
+#wikichart tr.wrapper td {
+  padding-top: 0.25em;
+  vertical-align: bottom;
+}
+
+#wikichart tr.wrapper + iframe {
+  width: 100%;
+}
+
+/* -----------------------------------------------
+:: #wikichart five-columns
+-------------------------------------------------- */
+#wikichart tr.wrapper.five-columns *:nth-of-type(2),
+#wikichart tr.wrapper.five-columns *:nth-of-type(3) {
+  display: none;
+}
+
+#wikichart tr.wrapper.five-columns *:nth-of-type(4) {
+  padding-right: 1em;
+}
+
+#wikichart tr.wrapper.five-columns *:nth-of-type(4),
+#wikichart tr.wrapper.five-columns *:nth-of-type(5) {
+  width: 40%;
+  text-align: left;
+}
+
+/* -----------------------------------------------
+:: #wikichart six-columns
+-------------------------------------------------- */
+#wikichart tr.wrapper.six-columns *:nth-of-type(2),
+#wikichart tr.wrapper.six-columns *:nth-of-type(3),
+#wikichart tr.wrapper.six-columns *:nth-of-type(4) {
+  display: none;
+}
+
+#wikichart tr.wrapper.six-columns *:nth-of-type(5) {
+  padding-right: 1em;
+}
+
+#wikichart tr.wrapper.six-columns *:nth-of-type(5),
+#wikichart tr.wrapper.six-columns *:nth-of-type(6) {
+  width: 40%;
+  text-align: left;
+}
+
+/* -----------------------------------------------
+:: #wikichart seven-columns
+-------------------------------------------------- */
+#wikichart tr.wrapper.seven-columns *:nth-of-type(2),
+#wikichart tr.wrapper.seven-columns *:nth-of-type(3),
+#wikichart tr.wrapper.seven-columns *:nth-of-type(4),
+#wikichart tr.wrapper.seven-columns *:nth-of-type(5) {
+  display: none;
+}
+
+#wikichart tr.wrapper.seven-columns *:nth-of-type(6) {
+  padding-right: 1em;
+}
+
+#wikichart tr.wrapper.seven-columns *:nth-of-type(6),
+#wikichart tr.wrapper.seven-columns *:nth-of-type(7) {
+  width: 40%;
+  text-align: left;
+}
+
+/* -----------------------------------------------
+:: .iframe-wrapper / .load-wrapper / .no-song-wrapper
+-------------------------------------------------- */
+.iframe-wrapper td,
+.load-wrapper td,
+.no-song-wrapper td {
+  padding-bottom: 5px;
+  /* border-bottom: 1px solid #3042fa; */
+}
+
+.iframe-wrapper td {
+  line-height: 0;
+}
+
+.iframe-wrapper iframe,
+.load-wrapper td > div,
+.no-song-wrapper td > div {
+  height: 80px;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0px 5px 5px #aaa;
+}
+
+.load-wrapper {
+  bottom: 5px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.load-wrapper td {
+  display: block;
+  margin: 0 2px;
+}
+
+.load-wrapper td > div,
+.no-song-wrapper td > div {
+  display: table;
+  min-width: 200px;
+  /* border: 1px solid #282828; */
+  background-color: #fff;
+}
+
+.load-wrapper .load-song,
+.no-song-wrapper .no-song {
+  display: table-cell;
+  color: #3042fa;
+  /* font-weight: 700; */
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* -----------------------------------------------
+:: Media specific
+-------------------------------------------------- */
+@media only screen and (min-width: 25.875em) {
+  /*
+min-width:414px -  iPhone6 Plus portrait - small-grid;
+*/
+  .panel {
+    margin: 1em;
+  }
+}
+@media only screen and (min-width: 48em) {
+  /*
+min-width:768px - iPad portrait - large-grid;
+*/
+  #background ul.top {
+    top: 5%;
+  }
+  #wikichart > table:first-of-type,
+  .iframe-wrapper iframe,
+  .load-wrapper td > div,
+  .no-song-wrapper td > div {
+    max-width: 400px;
+  }
+}
+@media screen and (min-width: 64em) {
+  /*
+min-width:1024px - iPad landscape - xlarge-grid;
+*/
+  #background ul.left,
+  #background ul.right {
+    top: 75%;
+  }
+  #background ul.left {
+    left: 50%;
+  }
+  #background ul.right {
+    right: 50%;
+  }
+  #background ul.top {
+    top: 10%;
+  }
+  #background ul.bottom {
+    top: auto;
+    bottom: 50%;
+  }
+}
