@@ -2,6 +2,7 @@
   "name": "rest-api",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "spotify-connect.js",
   "scripts": {
     "start": "node index.js",
@@ -17,6 +18,5 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
-  },
-  "type": "module"
+  }
 }
