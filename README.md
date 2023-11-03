@@ -20,9 +20,9 @@ Lots of great functional ideas stemmed from this project (generated from showing
 
 Sometimes anomalies are returned - the code can be tuned further to take care of these.
 
-## Available Scripts 1
+## Available Scripts
 
-In the 'client' project directory you can run:
+In the root directory you can run:
 
 ### `npm install`
 
@@ -32,26 +32,20 @@ Will perform a usual installation of any dependencies.
 
 Will perform a usual launch of the dev environment.
 
-## Available Scripts 2
-
-In the 'rest-api' project directory you can run:
-
-### `npm run dev`
-
-Will perform a usual launch of the back-end Node.JS dev environment.
-
 ## NOTE 1:
 
-In the 'rest-api' folder, you will need to provide your own Spotify keys - in a .env file.
+In the root directory, you will need to provide your own Spotify keys - in a .env file.
 
 Format:
 
-'CLIENT_ID=<your-connection-string>'
+'VITE_CLIENT_ID='
 
-'CLIENT_SECRET=<your-connection-string>'
+'VITE_CLIENT_SECRET='
 
 ## NOTE 2:
 
-As this is a Vite app, I hosted it on GitHub pages using this guide:
+As this is an app with secrets, I hosted it on GitHub pages using these links as a guide:
 
-https://medium.com/@aishwaryaparab1/deploying-vite-deploying-vite-app-to-github-pages-166fff40ffd3
+https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository
+
+https://github.com/facebook/create-react-app/discussions/9064#discussioncomment-30344
