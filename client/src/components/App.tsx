@@ -231,131 +231,115 @@ const App = () => {
                   title = titleWord.join("+");
                 }
 
-                // Part 1 - get token
-                const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
-                const CLIENT_SECRET = import.meta.env.VITE_CLIENT_SECRET;
-                const auth = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
-
-                const config = {
-                  method: "post",
-                  url: "https://accounts.spotify.com/api/token",
-                  headers: {
-                    Authorization: auth,
-                  },
-                  data: "grant_type=client_credentials",
-                };
-                axios(config).then((result) => {
-                  // console.log(result.data);
-
-                  // Part 2 - use token to retrieve data
-                  const authToken = `Bearer ${result.data.access_token}`;
-                  // console.log(authToken);
-
-                  const tokenConfig = {
-                    method: "get",
-                    url: `https://api.spotify.com/v1/search?q=${artist}${title}&type=track&market=GB&limit=1`,
-                    headers: {
-                      Authorization: authToken,
-                    },
-                  };
-                  axios(tokenConfig)
-                    .then((response) => {
-                      // console.log(response);
-                      // get Spotify ID if exists, push into array
-                      const data = response.data;
-                      const displayWrapper = (wrapper: HTMLTableRowElement) => {
-                        const songRow = document.querySelector(
-                          `#wikichart tr:nth-of-type(${index + 2}) tr.wrapper`
-                        );
-                        if (songRow) {
-                          songRow.after(wrapper);
-                        }
-                      };
-                      // if no song
-                      if (!data.tracks.items[0]) {
-                        // wrap: no song
-                        const createWrapNoSong = () => {
-                          // construct loader
-                          const trElement = document.createElement("tr");
-                          trElement.classList.add("no-song-wrapper");
-                          trElement.innerHTML = `<td colspan='3'><div>
+                axios
+                  .post(
+                    "http://localhost:3001/",
+                    {
+                      spotifyUrl: `https://api.spotify.com/v1/search?q=${artist}${title}&type=track&market=GB&limit=1`,
+                    }
+                    // {
+                    //   headers: {
+                    //     "Content-Type":
+                    //       "application/x-www-form-urlencoded;charset=UTF-8",
+                    //   },
+                    // }
+                  )
+                  .then((response) => {
+                    // console.log(response);
+                    // get Spotify ID if exists, push into array
+                    const data = response.data;
+                    const displayWrapper = (wrapper: HTMLTableRowElement) => {
+                      const songRow = document.querySelector(
+                        `#wikichart tr:nth-of-type(${index + 2}) tr.wrapper`
+                      );
+                      if (songRow) {
+                        songRow.after(wrapper);
+                      }
+                    };
+                    // if no song
+                    if (!data.tracks.items[0]) {
+                      // wrap: no song
+                      const createWrapNoSong = () => {
+                        // construct loader
+                        const trElement = document.createElement("tr");
+                        trElement.classList.add("no-song-wrapper");
+                        trElement.innerHTML = `<td colspan='3'><div>
                           <div class='no-song'>No song found on Spotify!</div>
                           </div></td>`;
-                          return trElement;
-                        };
-                        // song row
-                        displayWrapper(createWrapNoSong());
-                      } else if (data.tracks.items[0]) {
-                        // wrap: song loader
-                        const createWrapSongLoader = () => {
-                          // construct loader
-                          const trElement = document.createElement("tr");
-                          trElement.classList.add("load-wrapper");
-                          trElement.innerHTML = `<td colspan='3'><div>
+                        return trElement;
+                      };
+                      // song row
+                      displayWrapper(createWrapNoSong());
+                    } else if (data.tracks.items[0]) {
+                      // wrap: song loader
+                      const createWrapSongLoader = () => {
+                        // construct loader
+                        const trElement = document.createElement("tr");
+                        trElement.classList.add("load-wrapper");
+                        trElement.innerHTML = `<td colspan='3'><div>
                         <div class='load-song'>Loading song...</div>
                         </div></td>`;
-                          return trElement;
-                        };
-                        // song row
-                        displayWrapper(createWrapSongLoader());
+                        return trElement;
+                      };
+                      // song row
+                      displayWrapper(createWrapSongLoader());
 
-                        // wrap: song iframe
-                        const createWrapSongIframe = () => {
-                          // construct iframe
-                          const trElement = document.createElement("tr");
-                          trElement.classList.add("iframe-wrapper");
-                          trElement.innerHTML = `<td colspan='3'></td>`;
-                          return trElement;
-                        };
-                        // song row
-                        displayWrapper(createWrapSongIframe());
+                      // wrap: song iframe
+                      const createWrapSongIframe = () => {
+                        // construct iframe
+                        const trElement = document.createElement("tr");
+                        trElement.classList.add("iframe-wrapper");
+                        trElement.innerHTML = `<td colspan='3'></td>`;
+                        return trElement;
+                      };
+                      // song row
+                      displayWrapper(createWrapSongIframe());
 
-                        //query Spotify ID
-                        const songId = data.tracks.items[0].id;
-                        // insert Spotify src
-                        const spotifyApiSrc = `https://open.spotify.com/embed?uri=spotify:track:${songId}`;
-                        // iframe create
-                        const iframeElement = document.createElement("iframe");
-                        iframeElement.setAttribute("src", spotifyApiSrc);
-                        iframeElement.setAttribute("frameborder", "0");
-                        iframeElement.setAttribute("allowtransparency", "true");
-                        iframeElement.setAttribute("allow", "encrypted-media");
-                        // attach 'load' before iframe starts loading
-                        iframeElement.onload = () => {
-                          const songLoader = document.querySelector(
-                            `#wikichart tr:nth-of-type(${
-                              index + 2
-                            }) tr.load-wrapper`
-                          ) as HTMLElement;
-                          if (songLoader) {
-                            songLoader.style.display = "none";
-                          }
-                        };
-                        // output iframe
-                        const iframeRow = document.querySelector(
+                      //query Spotify ID
+                      const songId = data.tracks.items[0].id;
+                      // insert Spotify src
+                      const spotifyApiSrc = `https://open.spotify.com/embed?uri=spotify:track:${songId}`;
+                      // iframe create
+                      const iframeElement = document.createElement("iframe");
+                      iframeElement.setAttribute("src", spotifyApiSrc);
+                      iframeElement.setAttribute("frameborder", "0");
+                      iframeElement.setAttribute("allowtransparency", "true");
+                      iframeElement.setAttribute("allow", "encrypted-media");
+                      // attach 'load' before iframe starts loading
+                      iframeElement.onload = () => {
+                        const songLoader = document.querySelector(
                           `#wikichart tr:nth-of-type(${
                             index + 2
-                          }) tr.iframe-wrapper td`
-                        );
-                        if (iframeRow) {
-                          const wrap = (
-                            wrapperElement: Element,
-                            insideElement: HTMLIFrameElement
-                          ) => {
-                            // construct wrapper
-                            insideElement.replaceWith(wrapperElement);
-                            wrapperElement.appendChild(insideElement);
-                          };
-                          wrap(iframeRow, iframeElement);
+                          }) tr.load-wrapper`
+                        ) as HTMLElement;
+                        if (songLoader) {
+                          songLoader.style.display = "none";
                         }
+                      };
+                      // output iframe
+                      const iframeRow = document.querySelector(
+                        `#wikichart tr:nth-of-type(${
+                          index + 2
+                        }) tr.iframe-wrapper td`
+                      );
+                      if (iframeRow) {
+                        const wrap = (
+                          wrapperElement: Element,
+                          insideElement: HTMLIFrameElement
+                        ) => {
+                          // construct wrapper
+                          insideElement.replaceWith(wrapperElement);
+                          wrapperElement.appendChild(insideElement);
+                        };
+                        wrap(iframeRow, iframeElement);
                       }
-                      // resolve when complete
-                      resolve();
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    });
-                });
+                    }
+                    // resolve when complete
+                    resolve();
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
               });
             };
 
