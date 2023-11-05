@@ -44,8 +44,14 @@ Format:
 
 ## NOTE 2:
 
-As this is an app with secrets, I hosted it on GitHub pages using these links as a guide:
+As this is an app with secrets - first I pushed the secrets to GitHub using this link as a guide:
 
 https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository
 
-https://github.com/facebook/create-react-app/discussions/9064#discussioncomment-30344
+As this is a Vite app, I hosted it on GitHub pages using this guide:
+
+https://medium.com/@aishwaryaparab1/deploying-vite-deploying-vite-app-to-github-pages-166fff40ffd3
+
+Also this:
+
+https://github.com/tschaub/gh-pages/issues/345
