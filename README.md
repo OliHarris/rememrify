@@ -36,6 +36,10 @@ Will perform a usual launch of the dev environment.
 
 In the 'rest-api' project directory you can run:
 
+### `npm install`
+
+Will perform a usual installation of any dependencies.
+
 ### `npm run dev`
 
 Will perform a usual launch of the back-end Node.JS dev environment.
