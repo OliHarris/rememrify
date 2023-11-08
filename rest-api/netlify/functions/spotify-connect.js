@@ -71,6 +71,8 @@ export const handler = async (event, context) => {
     headers: {
       // required for CORS support to work
       "Access-Control-Allow-Origin": "*",
+      // required for cookies, authorization headers with HTTPS
+      "Access-Control-Allow-Credentials": true,
     },
     body: JSON.stringify(spotifyData),
   };
