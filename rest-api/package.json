@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "netlify/functions/spotify-connect.js",
+  "main": "spotify-connect-local.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",

@@ -6,8 +6,17 @@ app.use(urlencoded({ extended: true }));
 // express json-parser
 app.use(json());
 
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
+
 import axios from "axios";
-const getSpotifyData = async (body, response) => {
+
+app.post("/", async (request, response) => {
+  const body = request.body;
+  // console.log(body);
+
   // Part 1 - get token
   const CLIENT_ID = process.env.CLIENT_ID;
   const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -41,16 +50,12 @@ const getSpotifyData = async (body, response) => {
     };
     await axios(tokenConfig).then((tokenResult) => {
       // console.log(tokenResult.data);
-      return response.json(tokenResult.data);
+      response.json(tokenResult.data);
     });
   });
-};
+});
 
-export const handler = async (event, context) => {
-  const body = request.body;
-  return {
-    statusCode: 200,
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(getSpotifyData(body, response)),
-  };
-};
+const PORT = 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

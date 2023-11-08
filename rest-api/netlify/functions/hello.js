@@ -1,4 +1,4 @@
-exports.handler = async function (event, context) {
+export const handler = async (event, context) => {
 	return {
 		statusCode: 200,
 		headers: { "content-type": "application/json" },
