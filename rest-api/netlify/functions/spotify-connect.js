@@ -56,7 +56,7 @@ if (process.env.NODE_ENV !== "production") {
     getSpotifyData(body, response);
   });
 } else {
-  exports.handler = async (request, response) => {
+  exports.handler = async function (event, context) {
     const body = request.body;
     return {
       statusCode: 200,
