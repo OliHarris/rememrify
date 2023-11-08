@@ -47,6 +47,19 @@ const getSpotifyData = async (body) => {
 };
 
 export const handler = async (event, context) => {
+  const CORS_HEADERS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers":
+      "Origin, X-Requested-With, Content-Type, Accept",
+  };
+
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: CORS_HEADERS,
+    };
+  }
+
   let body;
   // test switch
   if (event.body) {
@@ -68,9 +81,7 @@ export const handler = async (event, context) => {
 
   return {
     statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "https://oliharris.github.io/rememrify/",
-    },
+    headers: CORS_HEADERS,
     body: JSON.stringify(spotifyData),
   };
 };
