@@ -55,6 +55,7 @@ export const handler = async (event, context) => {
   } else {
     // testing purposes - GET
     // http://localhost:9999/.netlify/functions/spotify-connect
+    // https://rememrify-connect.netlify.app/.netlify/functions/spotify-connect
     body = {
       spotifyUrl:
         "https://api.spotify.com/v1/search?q=Far+East+Movement+Like+A+G6&type=track&market=GB&limit=1",
@@ -67,7 +68,10 @@ export const handler = async (event, context) => {
 
   return {
     statusCode: 200,
-    headers: { "content-type": "application/json" },
+    headers: {
+      // required for CORS support to work
+      "Access-Control-Allow-Origin": "*",
+    },
     body: JSON.stringify(spotifyData),
   };
 };
