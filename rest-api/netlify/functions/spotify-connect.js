@@ -46,7 +46,7 @@ const getSpotifyData = async (body, response) => {
   });
 };
 
-export const handler = async (event, context) => {
+export const handler = async (request, response) => {
   const body = request.body;
   return {
     statusCode: 200,
