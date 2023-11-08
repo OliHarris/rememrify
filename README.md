@@ -43,12 +43,14 @@ Will perform a usual installation of any dependencies.
 ### `npm run dev`
 
 Will perform a usual launch of the back-end Node.JS dev environment; for file: spotify-connect-local.js
-Server will run on port 3001
+
+Server will run: http://localhost:3001/
 
 ### `npm run serve`
 
 Will perform a launch of the local Netlify function; for file: netlify/functions/spotify-connect.js
-Server will run on port 9999
+
+Server will run on: http://localhost:9999/.netlify/functions/spotify-connect
 
 ## NOTE 1:
 

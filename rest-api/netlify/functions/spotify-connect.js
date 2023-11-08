@@ -7,7 +7,7 @@ app.use(urlencoded({ extended: true }));
 app.use(json());
 
 import axios from "axios";
-const getSpotifyData = async (body, response) => {
+const getSpotifyData = async (body) => {
   // Part 1 - get token
   const CLIENT_ID = process.env.CLIENT_ID;
   const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -25,7 +25,7 @@ const getSpotifyData = async (body, response) => {
     },
     data: "grant_type=client_credentials",
   };
-  await axios(config).then(async (result) => {
+  return await axios(config).then(async (result) => {
     // console.log(result.data);
 
     // Part 2 - use token to retrieve data
@@ -39,18 +39,35 @@ const getSpotifyData = async (body, response) => {
         Authorization: authToken,
       },
     };
-    await axios(tokenConfig).then((tokenResult) => {
+    return await axios(tokenConfig).then((tokenResult) => {
       // console.log(tokenResult.data);
-      return response.json(tokenResult.data);
+      return tokenResult.data;
     });
   });
 };
 
-export const handler = async (request, response) => {
-  const body = request.body;
+export const handler = async (event, context) => {
+  let body;
+  // test switch
+  if (event.body) {
+    // called from UI - POST
+    body = event.body;
+  } else {
+    // testing purposes - GET
+    // http://localhost:9999/.netlify/functions/spotify-connect
+    body = {
+      spotifyUrl:
+        "https://api.spotify.com/v1/search?q=Far+East+Movement+Like+A+G6&type=track&market=GB&limit=1",
+    };
+  }
+
+  const spotifyData = await getSpotifyData(body).then(async (response) => {
+    return response;
+  });
+
   return {
     statusCode: 200,
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(getSpotifyData(body, response)),
+    body: JSON.stringify(spotifyData),
   };
 };
