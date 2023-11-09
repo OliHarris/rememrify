@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== "production") {
 
 import axios from "axios";
 
-app.post("/", async (request, response) => {
+app.get("/", async (request, response) => {
   const body = request.body;
   // console.log(body);
 
@@ -29,8 +29,6 @@ app.post("/", async (request, response) => {
     url: "https://accounts.spotify.com/api/token",
     headers: {
       Authorization: auth,
-      // Accept: "application/json",
-      // "Content-Type": "application/x-www-form-urlencoded",
     },
     data: "grant_type=client_credentials",
   };
@@ -40,18 +38,7 @@ app.post("/", async (request, response) => {
     // Part 2 - use token to retrieve data
     const authToken = `Bearer ${result.data.access_token}`;
     // console.log(authToken);
-
-    const tokenConfig = {
-      method: "get",
-      url: body.spotifyUrl,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-    await axios(tokenConfig).then((tokenResult) => {
-      // console.log(tokenResult.data);
-      response.json(tokenResult.data);
-    });
+    response.json(authToken);
   });
 });
 

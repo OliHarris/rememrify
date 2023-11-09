@@ -176,9 +176,9 @@ const App = () => {
             setTableOutput(parseHtml(table.outerHTML));
           })();
 
-          (() => {
+          (async () => {
             // array looper
-            const arrayLooper = (index: number) => {
+            const arrayLooper = (index: number, authToken: string) => {
               return new Promise<void>((resolve) => {
                 const stringCleanser = (string: string | null) => {
                   if (string) {
@@ -231,22 +231,14 @@ const App = () => {
                   title = titleWord.join("+");
                 }
 
-                const currentHostname = window.location.hostname;
-                axios
-                  .post(
-                    currentHostname === "localhost"
-                      ? "http://localhost:3001/"
-                      : "https://rememrify-connect.netlify.app/api/spotify-connect",
-                    {
-                      spotifyUrl: `https://api.spotify.com/v1/search?q=${artist}${title}&type=track&market=GB&limit=1`,
-                    }
-                    // {
-                    //   headers: {
-                    //     "Content-Type":
-                    //       "application/x-www-form-urlencoded;charset=UTF-8",
-                    //   },
-                    // }
-                  )
+                const tokenConfig = {
+                  method: "get",
+                  url: `https://api.spotify.com/v1/search?q=${artist}${title}&type=track&market=GB&limit=1`,
+                  headers: {
+                    Authorization: authToken,
+                  },
+                };
+                axios(tokenConfig)
                   .then((response) => {
                     // console.log(response);
                     // get Spotify ID if exists, push into array
@@ -346,16 +338,29 @@ const App = () => {
               });
             };
 
-            // change number to array
-            new Array(total).fill(0).forEach(async (_item, index, array) => {
-              await arrayLooper(index).then(() => {
-                // callback
-                if (index + 1 === array.length) {
-                  // output table
-                  setLoadData(false);
-                }
+            // get get auth token securely from Netlify Function API
+            const currentHostname = window.location.hostname;
+            await axios
+              .get(
+                currentHostname === "localhost"
+                  ? "http://localhost:3001/"
+                  : "https://rememrify-connect.netlify.app/api/spotify-connect"
+              )
+              .then(async (response) => {
+                const authToken = response.data;
+                // change number to array
+                new Array(total)
+                  .fill(0)
+                  .forEach(async (_item, index, array) => {
+                    await arrayLooper(index, authToken).then(() => {
+                      // callback
+                      if (index + 1 === array.length) {
+                        // output table
+                        setLoadData(false);
+                      }
+                    });
+                  });
               });
-            });
           })();
         })
         .catch((error) => {
