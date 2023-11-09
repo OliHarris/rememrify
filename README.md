@@ -2,6 +2,8 @@
 
 :heavy_check_mark: Code in pure React / TypeScript
 
+:heavy_check_mark: Spotify CLIENT_SECRET environment variable hidden behind deployed Netlify Function API
+
 Re-dev of this project:
 
 https://github.com/OliHarris/rememrify-v1
@@ -67,3 +69,15 @@ Format:
 As this is a Vite app, I hosted it on GitHub pages using this guide:
 
 https://medium.com/@aishwaryaparab1/deploying-vite-deploying-vite-app-to-github-pages-166fff40ffd3
+
+## NOTE 3:
+
+To hide the CLIENT_SECRET I have built and deployed the 'rest-api' folder, and hosted it here: https://rememrify-connect.netlify.app/api/spotify-connect
+
+This page was a guide:
+
+https://hrishikeshpathak.com/blog/host-nodejs-api-netlify-functions/
+
+Further CORS issues were resolved with this guide:
+
+https://www.johno.com/cors-handling-with-netlify-functions

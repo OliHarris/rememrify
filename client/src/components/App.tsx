@@ -236,7 +236,7 @@ const App = () => {
                   .post(
                     currentHostname === "localhost"
                       ? "http://localhost:3001/"
-                      : "https://rememrify-connect.netlify.app/.netlify/functions/spotify-connect",
+                      : "https://rememrify-connect.netlify.app/api/spotify-connect",
                     {
                       spotifyUrl: `https://api.spotify.com/v1/search?q=${artist}${title}&type=track&market=GB&limit=1`,
                     }

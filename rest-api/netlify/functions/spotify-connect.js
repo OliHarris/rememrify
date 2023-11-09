@@ -68,7 +68,7 @@ export const handler = async (event, context) => {
   } else {
     // testing purposes - GET
     // http://localhost:9999/.netlify/functions/spotify-connect
-    // https://rememrify-connect.netlify.app/.netlify/functions/spotify-connect
+    // https://rememrify-connect.netlify.app/api/spotify-connect
     body = {
       spotifyUrl:
         "https://api.spotify.com/v1/search?q=Far+East+Movement+Like+A+G6&type=track&market=GB&limit=1",
