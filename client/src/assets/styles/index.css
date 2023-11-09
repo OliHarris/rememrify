@@ -190,7 +190,6 @@ body {
   color: #000;
   line-height: 1.625;
   background: #316bfa;
-  border: 1em solid #316bfa;
   cursor: auto;
 }
 
@@ -555,7 +554,6 @@ main > * {
     #316bfa
   ); /* Firefox 3.6 to 15 */
   background: radial-gradient(circle, #fff, #316bfa); /* Standard syntax */
-  border: 0.5em solid #fac031;
 }
 
 main > .row > .columns {
@@ -800,6 +798,12 @@ main > .row > .columns {
   /*
 	min-width:480px - iPhone landscape - medium-grid;
 	*/
+  body {
+    border: 1em solid #316bfa;
+  }
+  main > * {
+    border: 0.5em solid #fac031;
+  }
 }
 
 @media only screen and (min-width: 48em) {

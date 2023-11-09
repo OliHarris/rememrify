@@ -338,7 +338,7 @@ const App = () => {
               });
             };
 
-            // get get auth token securely from Netlify Function API
+            // get auth token securely from Netlify Function API
             const currentHostname = window.location.hostname;
             await axios
               .get(
@@ -474,6 +474,13 @@ const App = () => {
                     .<br />
                     Catalogued by volunteers, this is a free reference of weekly
                     chart archive data.
+                  </p>
+                  <p>
+                    Datepicker drilled-in from{" "}
+                    <a href="https://flatpickr.js.org/" target="_blank">
+                      flatpickr
+                    </a>
+                    .
                   </p>
                   <p>
                     All design and implementation &copy;
