@@ -64,7 +64,7 @@ export const handler = async (event, context) => {
   // test switch
   if (event.body) {
     // called from UI - POST
-    body = event.body;
+    body = JSON.parse(event.body);
   } else {
     // testing purposes - GET
     // http://localhost:9999/.netlify/functions/spotify-connect
