@@ -28,7 +28,7 @@ const getSpotifyData = async (body) => {
 
     // Part 2 - use token to retrieve data
     const authToken = `Bearer ${result.data.access_token}`;
-    console.log(authToken);
+    // console.log(authToken);
 
     const tokenConfig = {
       method: "get",
