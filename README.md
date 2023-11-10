@@ -2,7 +2,7 @@
 
 :heavy_check_mark: Code in pure React / TypeScript
 
-:heavy_check_mark: Spotify CLIENT_SECRET environment variable hidden behind deployed Netlify Function API
+:heavy_check_mark: Spotify CLIENT_SECRET environment variable and generated auth token hidden behind deployed Netlify Function API
 
 Re-dev of this project:
 
