@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== "production") {
 
 import axios from "axios";
 
-app.get("/", async (request, response) => {
+app.post("/", async (request, response) => {
   const body = request.body;
   // console.log(body);
 
@@ -38,7 +38,18 @@ app.get("/", async (request, response) => {
     // Part 2 - use token to retrieve data
     const authToken = `Bearer ${result.data.access_token}`;
     // console.log(authToken);
-    response.json(authToken);
+
+    const tokenConfig = {
+      method: "get",
+      url: body.spotifyUrl,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+    await axios(tokenConfig).then((tokenResult) => {
+      // console.log(tokenResult.data);
+      response.json(tokenResult.data);
+    });
   });
 });
 

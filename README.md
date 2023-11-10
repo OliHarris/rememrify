@@ -72,7 +72,7 @@ https://medium.com/@aishwaryaparab1/deploying-vite-deploying-vite-app-to-github-
 
 ## NOTE 3:
 
-To hide the CLIENT_SECRET I have built and deployed the 'rest-api' folder, and hosted it here: https://rememrify-connect.netlify.app/api/spotify-connect
+To hide the CLIENT_SECRET and generated auth token I have built and deployed the 'rest-api' folder, and hosted it here: https://rememrify-connect.netlify.app/api/spotify-connect
 
 This page was a guide:
 
