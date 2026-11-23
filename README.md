@@ -16,7 +16,7 @@ I then went on to study and wrap a Grunt workflow around the project, which conc
 
 More playing with API's, this time from the UK Charts Archive Wikia:
 
-http://uk-charts-archive.wikia.com/
+https://uk-charts-archive.fandom.com/
 
 Lots of great functional ideas stemmed from this project (generated from showing to people); these can be researched and written up, and requires getting to grips with Spotify API in due time...
 

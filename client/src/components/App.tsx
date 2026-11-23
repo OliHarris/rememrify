@@ -61,7 +61,7 @@ const App = () => {
 
       axios
         .get(
-          `https://uk-charts-archive.wikia.com/api.php?action=parse&format=json&page=UK_Singles_%26_Album_Chart_(${weekStart})&origin=*`
+          `https://uk-charts-archive.fandom.com/api.php?action=parse&format=json&page=UK_Singles_%26_Album_Chart_(${weekStart})&origin=*`
         )
         .then((response) => {
           // console.log(response);
@@ -456,7 +456,7 @@ const App = () => {
                   <p>
                     This would not be possible without the{" "}
                     <a
-                      href="http://uk-charts-archive.wikia.com/"
+                      href="https://uk-charts-archive.fandom.com/"
                       target="_blank"
                     >
                       UK Charts Archive Wiki
