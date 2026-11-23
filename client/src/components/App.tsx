@@ -477,7 +477,7 @@ const App = () => {
                     <a href="http://github.com/oliharris" target="_blank">
                       Oliver Harris
                     </a>
-                    , 2017, 2021, 2023
+                    , 2017, 2021, 2023, 2026
                   </p>
                   <p>
                     <em>Where we're going, we don't need roads!</em>
