@@ -20,14 +20,8 @@ const App = () => {
             selectedDate.getDate() - (selectedDate.getDay() + 1)
           )
         : selectedDate.setDate(selectedDate.getDate());
-    // nextDate - check not Friday
-    const nextDate =
-      selectedDate.getDay() !== 5
-        ? // work out next Friday
-          selectedDate.setDate(
-            selectedDate.getDate() + ((5 + (7 - selectedDate.getDay())) % 7)
-          )
-        : selectedDate.setDate(selectedDate.getDate());
+    // nextDate - selectedDate is now the Saturday, so the week ends on the Friday six days later
+    const nextDate = selectedDate.setDate(selectedDate.getDate() + 6);
     setDateRange([new Date(prevDate), new Date(nextDate)]);
     setWeekStart(new Date(prevDate).toLocaleDateString("en-GB"));
   };
@@ -72,6 +66,17 @@ const App = () => {
           const doc = parser.parseFromString(output, "text/html");
           const table = doc.getElementsByTagName("table")[0];
 
+          // wrap: no song
+          const createWrapNoSong = () => {
+            // construct message
+            const trElement = document.createElement("tr");
+            trElement.classList.add("no-song-wrapper");
+            trElement.innerHTML = `<td colspan='3'><div>
+              <div class='no-song'>No song found on Spotify!</div>
+              </div></td>`;
+            return trElement;
+          };
+
           const artistArray: (string | null)[] = [];
           const titleArray: (string | null)[] = [];
 
@@ -83,8 +88,11 @@ const App = () => {
               titleNode: Element | null
             ) => {
               if (classList.contains("song-row")) {
+                // always push one entry per song row (null if the column wasn't found),
+                // so array positions stay aligned with chart positions
+                artistArray.push(artistNode ? artistNode.textContent : null);
+                titleArray.push(titleNode ? titleNode.textContent : null);
                 if (artistNode) {
-                  artistArray.push(artistNode.textContent);
                   // format forward-slashes on UI
                   if (artistNode.textContent) {
                     artistNode.textContent = artistNode.textContent.replace(
@@ -94,7 +102,6 @@ const App = () => {
                   }
                 }
                 if (titleNode) {
-                  titleArray.push(titleNode.textContent);
                   // format forward-slashes on UI
                   if (titleNode.textContent) {
                     titleNode.textContent = titleNode.textContent.replace(
@@ -115,42 +122,46 @@ const App = () => {
               const trElement = document.createElement("tr");
               trElement.classList.add("wrapper");
               // format different table columns parsed
+              // artist is in this column; title is in the next one
+              let artistColumn: number | null = null;
               switch (content.children.length) {
                 case 5:
                 case 10:
                   trElement.classList.add("five-columns");
-                  extractSongData(
-                    content.classList,
-                    content.querySelector("td:nth-of-type(4)"),
-                    content.querySelector("td:nth-of-type(5)")
-                  );
+                  artistColumn = 4;
                   break;
                 case 6:
                 case 11:
                   trElement.classList.add("six-columns");
-                  extractSongData(
-                    content.classList,
-                    content.querySelector("td:nth-of-type(5)"),
-                    content.querySelector("td:nth-of-type(6)")
-                  );
+                  artistColumn = 5;
                   break;
                 case 7:
                 case 12:
                   trElement.classList.add("seven-columns");
-                  extractSongData(
-                    content.classList,
-                    content.querySelector("td:nth-of-type(6)"),
-                    content.querySelector("td:nth-of-type(7)")
-                  );
+                  artistColumn = 6;
                   break;
                 default:
+                // unrecognised layout: no song data can be read from this row
               }
+              extractSongData(
+                content.classList,
+                artistColumn
+                  ? content.querySelector(`td:nth-of-type(${artistColumn})`)
+                  : null,
+                artistColumn
+                  ? content.querySelector(`td:nth-of-type(${artistColumn + 1})`)
+                  : null
+              );
               // wrap child content
               Array.from(content.children).forEach((item) => {
                 trElement.appendChild(item);
               });
               // append to DOM
               tableElement.appendChild(trElement);
+              // song row we can't read: show the message now, as there's nothing to search for
+              if (artistColumn === null && content.classList.contains("song-row")) {
+                tableElement.appendChild(createWrapNoSong());
+              }
               tdElement.appendChild(tableElement);
               return tdElement;
             };
@@ -231,6 +242,13 @@ const App = () => {
                   title = titleWord.join("+");
                 }
 
+                // no artist or title could be read from this row: nothing to search for
+                // (its "No song found" message was added when the table was built)
+                if (!artist && !title) {
+                  resolve();
+                  return;
+                }
+
                 // get tokenResult securely from Netlify Function API
                 const currentHostname = window.location.hostname;
                 axios
@@ -256,16 +274,6 @@ const App = () => {
                     };
                     // if no song
                     if (!data.tracks.items[0]) {
-                      // wrap: no song
-                      const createWrapNoSong = () => {
-                        // construct loader
-                        const trElement = document.createElement("tr");
-                        trElement.classList.add("no-song-wrapper");
-                        trElement.innerHTML = `<td colspan='3'><div>
-                          <div class='no-song'>No song found on Spotify!</div>
-                          </div></td>`;
-                        return trElement;
-                      };
                       // song row
                       displayWrapper(createWrapNoSong());
                     } else if (data.tracks.items[0]) {
@@ -341,8 +349,12 @@ const App = () => {
               });
             };
 
-            // change number to array
-            new Array(total).fill(0).forEach(async (_item, index, array) => {
+            // one lookup per song row actually in the chart (up to total)
+            const songCount = artistArray.length;
+            if (songCount === 0) {
+              setLoadData(false);
+            }
+            new Array(songCount).fill(0).forEach(async (_item, index, array) => {
               await arrayLooper(index).then(() => {
                 // callback
                 if (index + 1 === array.length) {
