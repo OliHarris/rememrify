@@ -481,7 +481,10 @@ describe("App", () => {
       mockedAxios.get.mockResolvedValue(wikiResponse(buildWikiHtml(songs)));
       mockedAxios.post.mockImplementation((_url, body) => {
         const query = spotifyQuery(body);
-        if (query.startsWith("Bill")) return Promise.reject(error);
+        // fail on a later tick, as a real network request would
+        if (query.startsWith("Bill")) {
+          return new Promise((_resolve, reject) => setTimeout(() => reject(error), 0));
+        }
         return later(spotifyResponse(`id-${query}`));
       });
       const { container } = render(<App />);

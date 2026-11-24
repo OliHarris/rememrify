@@ -1,5 +1,4 @@
 import { useState, useEffect, ReactNode } from "react";
-import { flushSync } from "react-dom";
 import axios from "axios";
 import parseHtml from "html-react-parser";
 import SVGInject from "@iconfu/svg-inject";
@@ -207,11 +206,7 @@ const App = () => {
               }
             });
 
-            // put the table on the page right away (flushSync), so the Spotify
-            // lookups below can always find their rows, however fast they answer
-            flushSync(() => {
-              setTableOutput(parseHtml(table.outerHTML));
-            });
+            setTableOutput(parseHtml(table.outerHTML));
             // chart is ready: unlock the week picker now, rather than waiting
             // for the Spotify lookups (each song row shows its own "Loading song...")
             setLoadData(false);
