@@ -15,6 +15,11 @@ import axios from "axios";
 
 app.post("/", async (request, response) => {
   const body = request.body;
+
+  // only allow Spotify track searches, so the token can't be sent anywhere else
+  if (!String(body.spotifyUrl).startsWith("https://api.spotify.com/v1/search?")) {
+    return response.status(400).send("Invalid request");
+  }
   // console.log(body);
 
   // Part 1 - get token

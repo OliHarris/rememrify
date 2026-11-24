@@ -73,6 +73,11 @@ export const handler = async (event, context) => {
     };
   }
 
+  // only allow Spotify track searches, so the token can't be sent anywhere else
+  if (!String(body.spotifyUrl).startsWith("https://api.spotify.com/v1/search?")) {
+    return { statusCode: 400, headers: CORS_HEADERS, body: "Invalid request" };
+  }
+
   const spotifyData = await getSpotifyData(body).then(async (response) => {
     return response;
   });
