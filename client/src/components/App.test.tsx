@@ -58,8 +58,15 @@ const chartRows = (container: HTMLElement) =>
     container.querySelectorAll<HTMLTableRowElement>("#wikichart > table > tbody > tr")
   );
 
+// The week picker unlocks as soon as the chart renders; Spotify players arrive after.
+// Wait for both: no overlay, and every song row showing a player or "No song found".
 const waitForChartLoaded = () =>
-  waitFor(() => expect(screen.queryByText("Loading Chart...")).not.toBeInTheDocument());
+  waitFor(() => {
+    expect(screen.queryByText("Loading Chart...")).not.toBeInTheDocument();
+    expect(document.querySelector("#wikichart > table")).not.toBeNull();
+    const rows = document.querySelectorAll("#wikichart > table > tbody > tr.song-row");
+    rows.forEach((row) => expect(row.querySelector("iframe, .no-song")).not.toBeNull());
+  });
 
 describe("App", () => {
   let consoleLog: jest.SpyInstance;
@@ -371,10 +378,68 @@ describe("App", () => {
       expect(whamRow.querySelector("iframe")).not.toBeInTheDocument();
     });
 
-    it("shows the loading overlay until every lookup has finished", async () => {
+    it("shows the loading overlay while the chart itself is loading", async () => {
+      let resolveWiki: (value: unknown) => void = () => {};
+      mockedAxios.get.mockReturnValue(new Promise((resolve) => (resolveWiki = resolve)));
       render(<App />);
       expect(await screen.findByText("Loading Chart...")).toBeInTheDocument();
+
+      resolveWiki(wikiResponse(buildWikiHtml(songs)));
       await waitForChartLoaded();
+    });
+
+    it("unlocks the week picker as soon as the chart renders, before Spotify answers", async () => {
+      // Spotify never answers
+      mockedAxios.post.mockReturnValue(new Promise(() => {}));
+      const { container } = render(<App />);
+      await waitFor(() => expect(chartRows(container)).toHaveLength(21));
+      await waitFor(() =>
+        expect(screen.queryByText("Loading Chart...")).not.toBeInTheDocument()
+      );
+      expect(mockedAxios.post).toHaveBeenCalledTimes(20);
+      expect(container.querySelectorAll("#wikichart iframe")).toHaveLength(0);
+    });
+  });
+
+  describe("switching weeks", () => {
+    it("ignores Spotify answers for a week that is no longer on screen", async () => {
+      mockedAxios.get.mockResolvedValue(wikiResponse(buildWikiHtml(songs)));
+      // hold the first week's lookups until after the week has changed
+      const heldLookups: Array<() => void> = [];
+      let holdLookups = true;
+      mockedAxios.post.mockImplementation((_url, body) => {
+        const query = spotifyQuery(body);
+        const answer = query.startsWith("Wham!")
+          ? spotifyResponse(null)
+          : spotifyResponse(`id-${query}`);
+        if (holdLookups) {
+          return new Promise((resolve) => heldLookups.push(() => resolve(answer)));
+        }
+        return later(answer);
+      });
+
+      const { container } = render(<App />);
+      await waitFor(() => expect(heldLookups).toHaveLength(20));
+
+      // pick the next week while the first week's lookups are still pending
+      holdLookups = false;
+      pickDate.current = new Date(2000, 0, 12);
+      await userEvent.click(screen.getByTestId("flatpickr"));
+      expect(await screen.findByText("08/01/2000")).toBeInTheDocument();
+      await waitForChartLoaded();
+
+      // now let the old week's answers arrive
+      heldLookups.forEach((release) => release());
+      await new Promise((resolve) => setTimeout(resolve, 20));
+
+      // one player per found song (19) and one "No song found": no duplicates
+      expect(container.querySelectorAll("#wikichart iframe")).toHaveLength(19);
+      expect(container.querySelectorAll("#wikichart .no-song")).toHaveLength(1);
+      chartRows(container)
+        .slice(1)
+        .forEach((row) =>
+          expect(row.querySelectorAll("iframe, .no-song")).toHaveLength(1)
+        );
     });
   });
 
@@ -385,6 +450,10 @@ describe("App", () => {
       const { container } = render(<App />);
       await waitFor(() => expect(consoleLog).toHaveBeenCalledWith(error));
       expect(container.querySelector("#wikichart")).toBeEmptyDOMElement();
+      // the week picker isn't left locked
+      await waitFor(() =>
+        expect(screen.queryByText("Loading Chart...")).not.toBeInTheDocument()
+      );
       expect(mockedAxios.post).not.toHaveBeenCalled();
     });
 

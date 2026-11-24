@@ -45,6 +45,9 @@ const App = () => {
   const [loadData, setLoadData] = useState<boolean>(false);
   const [tableOutput, setTableOutput] = useState<ReactNode>(null);
   useEffect(() => {
+    // set to true when the week changes, so late answers for this week are ignored
+    let staleWeek = false;
+
     // clear table
     setTableOutput(null);
 
@@ -58,6 +61,8 @@ const App = () => {
           `https://uk-charts-archive.fandom.com/api.php?action=parse&format=json&page=UK_Singles_%26_Album_Chart_(${weekStart})&origin=*`
         )
         .then((response) => {
+          // a different week has been picked since this request was sent
+          if (staleWeek) return;
           // console.log(response);
           // populate data from Wiki API JSON file
           const output = response.data.parse.text["*"];
@@ -185,6 +190,9 @@ const App = () => {
             });
 
             setTableOutput(parseHtml(table.outerHTML));
+            // chart is ready: unlock the week picker now, rather than waiting
+            // for the Spotify lookups (each row shows its own "Loading song...")
+            setLoadData(false);
           })();
 
           (() => {
@@ -261,6 +269,11 @@ const App = () => {
                     }
                   )
                   .then((response) => {
+                    // a different week is on screen now: don't add this song to its table
+                    if (staleWeek) {
+                      resolve();
+                      return;
+                    }
                     // console.log(response);
                     // get Spotify ID if exists, push into array
                     const data = response.data;
@@ -351,24 +364,21 @@ const App = () => {
 
             // one lookup per song row actually in the chart (up to total)
             const songCount = artistArray.length;
-            if (songCount === 0) {
-              setLoadData(false);
-            }
-            new Array(songCount).fill(0).forEach(async (_item, index, array) => {
-              await arrayLooper(index).then(() => {
-                // callback
-                if (index + 1 === array.length) {
-                  // output table
-                  setLoadData(false);
-                }
-              });
+            new Array(songCount).fill(0).forEach((_item, index) => {
+              arrayLooper(index);
             });
           })();
         })
         .catch((error) => {
           console.log(error);
+          // don't leave the week picker locked if the chart couldn't load
+          if (!staleWeek) setLoadData(false);
         });
     }
+
+    return () => {
+      staleWeek = true;
+    };
   }, [weekStart]);
 
   useEffect(() => {
