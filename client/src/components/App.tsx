@@ -1,4 +1,5 @@
 import { useState, useEffect, ReactNode } from "react";
+import { flushSync } from "react-dom";
 import axios from "axios";
 import parseHtml from "html-react-parser";
 import SVGInject from "@iconfu/svg-inject";
@@ -71,13 +72,25 @@ const App = () => {
           const doc = parser.parseFromString(output, "text/html");
           const table = doc.getElementsByTagName("table")[0];
 
-          // wrap: no song
-          const createWrapNoSong = () => {
+          // wrap: no song (or another message in the same style)
+          const createWrapNoSong = (message = "No song found on Spotify!") => {
             // construct message
             const trElement = document.createElement("tr");
             trElement.classList.add("no-song-wrapper");
             trElement.innerHTML = `<td colspan='3'><div>
-              <div class='no-song'>No song found on Spotify!</div>
+              <div class='no-song'>${message}</div>
+              </div></td>`;
+            return trElement;
+          };
+
+          // wrap: song loader, shown from the moment the chart appears
+          // until that row's Spotify result arrives
+          const createWrapSongLoader = () => {
+            // construct loader
+            const trElement = document.createElement("tr");
+            trElement.classList.add("load-wrapper");
+            trElement.innerHTML = `<td colspan='3'><div>
+              <div class='load-song'>Loading song...</div>
               </div></td>`;
             return trElement;
           };
@@ -163,9 +176,14 @@ const App = () => {
               });
               // append to DOM
               tableElement.appendChild(trElement);
-              // song row we can't read: show the message now, as there's nothing to search for
-              if (artistColumn === null && content.classList.contains("song-row")) {
-                tableElement.appendChild(createWrapNoSong());
+              if (content.classList.contains("song-row")) {
+                if (artistColumn === null) {
+                  // song row we can't read: show the message now, as there's nothing to search for
+                  tableElement.appendChild(createWrapNoSong());
+                } else {
+                  // song row we'll look up: show its loader straight away
+                  tableElement.appendChild(createWrapSongLoader());
+                }
               }
               tdElement.appendChild(tableElement);
               return tdElement;
@@ -189,15 +207,39 @@ const App = () => {
               }
             });
 
-            setTableOutput(parseHtml(table.outerHTML));
+            // put the table on the page right away (flushSync), so the Spotify
+            // lookups below can always find their rows, however fast they answer
+            flushSync(() => {
+              setTableOutput(parseHtml(table.outerHTML));
+            });
             // chart is ready: unlock the week picker now, rather than waiting
-            // for the Spotify lookups (each row shows its own "Loading song...")
+            // for the Spotify lookups (each song row shows its own "Loading song...")
             setLoadData(false);
           })();
 
           (() => {
             // array looper
             const arrayLooper = (index: number) => {
+              // add a row (player, message) under this song's chart row
+              const displayWrapper = (wrapper: HTMLTableRowElement) => {
+                const songRow = document.querySelector(
+                  `#wikichart tr:nth-of-type(${index + 2}) tr.wrapper`
+                );
+                if (songRow) {
+                  songRow.after(wrapper);
+                }
+              };
+              // hide this song's "Loading song..." row; returns false if it has none
+              const hideSongLoader = () => {
+                const songLoader = document.querySelector(
+                  `#wikichart tr:nth-of-type(${index + 2}) tr.load-wrapper`
+                ) as HTMLElement | null;
+                if (songLoader) {
+                  songLoader.style.display = "none";
+                }
+                return songLoader !== null;
+              };
+
               return new Promise<void>((resolve) => {
                 const stringCleanser = (string: string | null) => {
                   if (string) {
@@ -251,8 +293,12 @@ const App = () => {
                 }
 
                 // no artist or title could be read from this row: nothing to search for
-                // (its "No song found" message was added when the table was built)
+                // (an unreadable row got its "No song found" message when the table was
+                // built; a readable row with empty cells swaps its loader for one now)
                 if (!artist && !title) {
+                  if (hideSongLoader()) {
+                    displayWrapper(createWrapNoSong());
+                  }
                   resolve();
                   return;
                 }
@@ -277,31 +323,13 @@ const App = () => {
                     // console.log(response);
                     // get Spotify ID if exists, push into array
                     const data = response.data;
-                    const displayWrapper = (wrapper: HTMLTableRowElement) => {
-                      const songRow = document.querySelector(
-                        `#wikichart tr:nth-of-type(${index + 2}) tr.wrapper`
-                      );
-                      if (songRow) {
-                        songRow.after(wrapper);
-                      }
-                    };
                     // if no song
                     if (!data.tracks.items[0]) {
-                      // song row
+                      // swap the loader for the message
+                      hideSongLoader();
                       displayWrapper(createWrapNoSong());
                     } else if (data.tracks.items[0]) {
-                      // wrap: song loader
-                      const createWrapSongLoader = () => {
-                        // construct loader
-                        const trElement = document.createElement("tr");
-                        trElement.classList.add("load-wrapper");
-                        trElement.innerHTML = `<td colspan='3'><div>
-                        <div class='load-song'>Loading song...</div>
-                        </div></td>`;
-                        return trElement;
-                      };
-                      // song row
-                      displayWrapper(createWrapSongLoader());
+                      // the row's loader stays visible until the player has loaded
 
                       // wrap: song iframe
                       const createWrapSongIframe = () => {
@@ -326,14 +354,7 @@ const App = () => {
                       iframeElement.setAttribute("allow", "encrypted-media");
                       // attach 'load' before iframe starts loading
                       iframeElement.onload = () => {
-                        const songLoader = document.querySelector(
-                          `#wikichart tr:nth-of-type(${
-                            index + 2
-                          }) tr.load-wrapper`
-                        ) as HTMLElement;
-                        if (songLoader) {
-                          songLoader.style.display = "none";
-                        }
+                        hideSongLoader();
                       };
                       // output iframe
                       const iframeRow = document.querySelector(
@@ -358,6 +379,11 @@ const App = () => {
                   })
                   .catch((error) => {
                     console.log(error);
+                    // don't leave this row saying "Loading song..." forever
+                    if (!staleWeek) {
+                      hideSongLoader();
+                      displayWrapper(createWrapNoSong("Couldn't load this song"));
+                    }
                   });
               });
             };

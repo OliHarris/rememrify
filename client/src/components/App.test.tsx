@@ -376,6 +376,25 @@ describe("App", () => {
       const whamRow = chartRows(container)[2];
       expect(within(whamRow).getByText("No song found on Spotify!")).toBeInTheDocument();
       expect(whamRow.querySelector("iframe")).not.toBeInTheDocument();
+      // its loader has been swapped for the message
+      expect(whamRow.querySelector<HTMLElement>("tr.load-wrapper")?.style.display).toBe("none");
+    });
+
+    it("shows 'Loading song...' on every row while the lookups are still running", async () => {
+      // Spotify never answers
+      mockedAxios.post.mockReturnValue(new Promise(() => {}));
+      const { container } = render(<App />);
+      await waitFor(() => expect(chartRows(container)).toHaveLength(21));
+
+      chartRows(container)
+        .slice(1)
+        .forEach((row) => {
+          const loader = row.querySelector<HTMLElement>("tr.load-wrapper");
+          expect(loader).toHaveTextContent("Loading song...");
+          expect(loader?.style.display).not.toBe("none");
+        });
+      // the info row has no loader
+      expect(chartRows(container)[0].querySelector("tr.load-wrapper")).toBeNull();
     });
 
     it("shows the loading overlay while the chart itself is loading", async () => {
@@ -470,7 +489,11 @@ describe("App", () => {
       await waitFor(() =>
         expect(container.querySelectorAll("#wikichart iframe")).toHaveLength(19)
       );
-      expect(chartRows(container)[1].querySelector("iframe")).not.toBeInTheDocument();
+      const failedRow = chartRows(container)[1];
+      expect(failedRow.querySelector("iframe")).not.toBeInTheDocument();
+      // the row says what happened instead of loading forever
+      expect(within(failedRow).getByText("Couldn't load this song")).toBeInTheDocument();
+      expect(failedRow.querySelector<HTMLElement>("tr.load-wrapper")?.style.display).toBe("none");
     });
   });
 });
