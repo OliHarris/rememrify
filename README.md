@@ -54,6 +54,8 @@ The browser never sees the client secret or the access token.
 
 ## Running it
 
+For a fuller guide to how the pieces fit together, including the `rest-api/` folder and the Netlify setup, see [docs/architecture.md](docs/architecture.md). My original development notes, the earlier version of this README, are kept in [docs/development-notes.md](docs/development-notes.md).
+
 ### Client (`client/`)
 
 ```bash
