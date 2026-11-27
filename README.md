@@ -8,6 +8,21 @@ The idea comes from Bill Drummond, who suggests finding the Top Twenty from the 
 
 This is a rebuild in React and TypeScript of my original project, [rememrify-v1](https://github.com/OliHarris/rememrify-v1). I designed and wrote both versions from scratch.
 
+### Authorship
+
+I designed and built Rememrify myself: the React and TypeScript app, the chart parsing and data cleaning, the week picker, the visual design and artwork, and the Spotify API on Netlify.
+
+In November 2026 I used Claude (Anthropic's AI coding assistant) to help prepare the project for my portfolio. Claude's contributions are limited to:
+
+- **The Jest test suite**, written from my code.
+- **Documentation:** this README's layout, [docs/architecture.md](docs/architecture.md), and the link-preview share card.
+- **Three small fixes I asked for:**
+  - a 3-line check that limits the Spotify API to track searches
+  - unlocking the calendar as soon as the chart appears, and ignoring answers for a week that's no longer selected
+  - a "Loading song..." placeholder on each row
+
+All of Claude's commits are tagged `Co-Authored-By: Claude` and can be listed with `git log --grep "Co-Authored-By: Claude"`. Everything else in the history is mine.
+
 ---
 
 ## What I built
@@ -37,7 +52,7 @@ The browser never sees the client secret or the access token.
 
 ### Testing
 
-- **Jest + React Testing Library** suite: **42 tests across every component and the entry point**, with each test file next to its component as `*.test.tsx`.
+- **Jest + React Testing Library** suite: **45 tests across every component and the entry point**, with each test file next to its component as `*.test.tsx`.
 - **100% coverage** of statements, branches, functions and lines. `npm run test` prints the coverage report and fails if coverage drops below 100%.
 - **The wiki and Spotify APIs are mocked,** so the suite runs offline with no keys.
 - **What it covers:**
@@ -48,7 +63,7 @@ The browser never sees the client secret or the access token.
   - the production vs. local API address
   - loading and error paths
 
-> **A note on authorship:** the application code is my own work. The Jest test suite was written by Claude (Anthropic's AI coding assistant), working from my code. I've read through it and understand how it's put together, and I maintain and extend it as the app changes. While writing the tests, Claude also found a real bug: when a chart row couldn't be read, every later song's Spotify player appeared next to the wrong song. That's now fixed and covered by tests.
+> **Written by Claude** (see [Authorship](#authorship)). I've read the suite, understand how it's put together, and maintain it as the app changes. While writing it, Claude found a real bug: when a chart row couldn't be read, every later song's Spotify player appeared next to the wrong song. That's now fixed and covered by tests.
 
 ---
 
